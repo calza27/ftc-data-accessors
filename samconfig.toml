@@ -1,0 +1,10 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "fireteam-core-data-accessors"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-1fv13f6lbx4ah"
+s3_prefix = "fireteam-core-data-accessors"
+region = "ap-southeast-2"
+profile = "cal-personal"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []

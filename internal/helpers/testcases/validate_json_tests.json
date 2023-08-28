@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Valid JSON string",
+        "body": "{\"name\":\"test\",\"age\":18}",
+        "should_pass": true
+    }, {
+        "name": "Invalid JSON string",
+        "body": "{\"name\":\"test\",\"age\":18, [}",
+        "should_pass": false
+    }
+]

@@ -1,0 +1,10 @@
+
+[
+    {
+        "name": "Scenario 1-Sample file. File has data",
+        "file_name": "naptan-120.csv",
+        "file_size": 120,
+        "file_type": "csv",
+        "file_data": "53616d706c652064617461207468617420492077616e7420746f20696e636c75646520666f722066756e"
+    }
+]

@@ -1,0 +1,178 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  fireteam-core-data-accessors. SAM Template for fireteam-core-data-accessors
+Globals:
+  Function:
+    Timeout: 5
+Resources:
+  LambdaReadFtcS3Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Description: Lambda role for fatmatcher-naptan-fetch
+      Path: /
+      Policies:
+        - PolicyName: s3-read-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Sub 'arn:aws:s3:::fireteam-core-army-data/*'
+        - PolicyName: logs-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                Resource:
+                  - arn:aws:logs:*:*:*
+  LambdaReadWriteFtcS3Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Description: Lambda role for fatmatcher-naptan-fetch
+      Path: /
+      Policies:
+        - PolicyName: s3-read-write-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource:
+                  - !Sub 'arn:aws:s3:::fireteam-core-army-data/*'
+        - PolicyName: logs-policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                Resource:
+                  - arn:aws:logs:*:*:*
+  GetArmyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./cmd/bin/getArmy
+      Handler: bootstrap
+      Runtime: provided.al2
+      Role: !GetAtt LambdaReadFtcS3Role.Arn
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /army/{army_id}
+            Method: GET
+  UpdateArmyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./cmd/bin/updateArmy
+      Handler: bootstrap
+      Runtime: provided.al2
+      Role: !GetAtt LambdaReadWriteFtcS3Role.Arn
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /army/{army_id}
+            Method: POST
+  GetFactionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./cmd/bin/getFactions
+      Handler: bootstrap
+      Runtime: provided.al2
+      Role: !GetAtt LambdaReadFtcS3Role.Arn
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /factions
+            Method: GET
+  UpdateFactionsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./cmd/bin/updateFactions
+      Handler: bootstrap
+      Runtime: provided.al2
+      Role: !GetAtt LambdaReadWriteFtcS3Role.Arn
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /factions
+            Method: POST
+  GetFireteamsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./cmd/bin/getFireteams
+      Handler: bootstrap
+      Runtime: provided.al2
+      Role: !GetAtt LambdaReadFtcS3Role.Arn
+      Architectures:
+        - x86_64
+      Events:
+        CatchAll:
+          Type: Api
+          Properties:
+            Path: /fireteams
+            Method: GET
+Outputs:
+  LambdaReadFtcS3Role:
+    Description: "IAM role for Lambda execution and reading data from the S3 data bucket"
+    Value: !GetAtt LambdaReadFtcS3Role.Arn
+  LambdaReadWriteFtcS3Role:
+    Description: "IAM role for Lambda execution and reading data from, and writing data to the S3 data bucket"
+    Value: !GetAtt LambdaReadWriteFtcS3Role.Arn
+  GetArmyFunction:
+    Description: "Lambda Function ARN for get army function"
+    Value: !GetAtt GetArmyFunction.Arn
+  UpdateArmyFunction:
+    Description: "Lambda Function ARN for post army function"
+    Value: !GetAtt UpdateArmyFunction.Arn
+  GetFactionsFunction:
+    Description: "Lambda Function ARN for get faction function"
+    Value: !GetAtt GetFactionsFunction.Arn
+  UpdateFactionsFunction:
+    Description: "Lambda Function ARN for post factions function"
+    Value: !GetAtt UpdateFactionsFunction.Arn
+  GetFireteamsFunction:
+    Description: "Lambda Function ARN for get fireteams function"
+    Value: !GetAtt GetFireteamsFunction.Arn
+
+
